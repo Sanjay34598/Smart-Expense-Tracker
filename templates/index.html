@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Expense Tracker | Premium Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --glass-bg: rgba(255, 255, 255, 0.9);
+            --glass-border: rgba(0, 0, 0, 0.05);
+            --primary-gradient: linear-gradient(135deg, #e53935 0%, #b71c1c 100%);
+            --accent-color: #ff1744;
+            --text-main: #2d3436;
+            --bg-mesh: transparent;
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background-color: #f8f9fa;
+            color: var(--text-main);
+            min-height: 100vh;
+            padding-bottom: 50px;
+        }
+
+        .glass-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+            color: var(--text-main);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .glass-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 40px 0 rgba(0, 0, 0, 0.45);
+        }
+
+        .header-title {
+            font-weight: 700;
+            background: linear-gradient(to right, #b71c1c, #2d3436);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 30px;
+        }
+
+        .btn-premium {
+            background: var(--primary-gradient);
+            border: none;
+            color: white;
+            font-weight: 600;
+            padding: 10px 25px;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-premium:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+            color: white;
+        }
+
+        .btn-secondary-glass {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            border-radius: 12px;
+        }
+
+        .btn-secondary-glass:hover {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+        }
+
+        .expense-table {
+            color: var(--text-main);
+        }
+
+        .expense-table thead {
+            background: rgba(0, 0, 0, 0.05);
+        }
+
+        .expense-table tr {
+            transition: all 0.2s ease;
+        }
+
+        .expense-table tbody tr:hover {
+            background: rgba(0, 0, 0, 0.02);
+            transform: scale(1.01);
+        }
+
+        .total-spending-badge {
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+
+        .form-control {
+            border-radius: 10px;
+            border: 1px solid #ddd;
+            padding: 12px;
+        }
+
+        .form-control:focus {
+            box-shadow: 0 0 0 0.25rem rgba(102, 126, 234, 0.25);
+            border-color: #667eea;
+        }
+
+        .badge-category {
+            padding: 6px 12px;
+            border-radius: 8px;
+            background: rgba(255, 23, 68, 0.1);
+            color: #ff1744;
+            font-weight: 600;
+            border: 1px solid rgba(255, 23, 68, 0.2);
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container mt-5">
+        <div class="text-center">
+            <h1 class="header-title display-4">💰 Smart Expense Tracker</h1>
+            <p class="text-light-50">Manage your finances with style and precision</p>
+        </div>
+
+        <div class="row g-4 mb-4">
+            <!-- Salary Card -->
+            <div class="col-md-3">
+                <div class="glass-card p-4 text-center h-100">
+                    <span class="d-block text-uppercase small opacity-75 mb-1 fw-bold">Monthly Salary</span>
+                    <span class="h3 mb-0 text-success">₹{{ "{:,.2f}".format(monthly_salary) }}</span>
+                </div>
+            </div>
+            <!-- Monthly Spending Card -->
+            <div class="col-md-3">
+                <div class="glass-card p-4 text-center h-100">
+                    <span class="d-block text-uppercase small opacity-75 mb-1 fw-bold">Spent (This Month)</span>
+                    <span class="h3 mb-0 text-danger">₹{{ "{:,.2f}".format(monthly_spending) }}</span>
+                </div>
+            </div>
+            <!-- Savings Card -->
+            <div class="col-md-3">
+                <div class="glass-card p-4 text-center h-100">
+                    <span class="d-block text-uppercase small opacity-75 mb-1 fw-bold">Est. Savings</span>
+                    <span class="h3 mb-0 text-primary">₹{{ "{:,.2f}".format(savings) }}</span>
+                </div>
+            </div>
+            <!-- Total Spending Card -->
+            <div class="col-md-3">
+                <div class="glass-card p-4 text-center h-100">
+                    <span class="d-block text-uppercase small opacity-75 mb-1 fw-bold">Total (All Time)</span>
+                    <span class="h3 mb-0">₹{{ "{:,.2f}".format(total_spending) }}</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Side-by-Side Features: Form and Charts -->
+        <div class="row g-4 mb-4">
+            <!-- Entry Forms -->
+            <div class="col-lg-4">
+                <!-- Add Expense Form -->
+                <div class="card glass-card p-4 mb-4 h-100 shadow-sm">
+                    <h5 class="mb-4 fw-bold">Add Transaction</h5>
+                    <form method="POST">
+                        <div class="mb-3">
+                            <label class="form-label small fw-bold">Title</label>
+                            <input type="text" name="title" class="form-control" placeholder="What did you spend on?"
+                                required>
+                        </div>
+                        <div class="row">
+                            <div class="col-6 mb-3">
+                                <label class="form-label small fw-bold">Amount (₹)</label>
+                                <input type="number" step="0.01" name="amount" class="form-control" placeholder="0.00"
+                                    required>
+                            </div>
+                            <div class="col-6 mb-3">
+                                <label class="form-label small fw-bold">Category</label>
+                                <input type="text" name="category" class="form-control" placeholder="Food, Rent, etc."
+                                    required>
+                            </div>
+                        </div>
+                        <div class="mb-4">
+                            <label class="form-label small fw-bold">Date</label>
+                            <input type="date" name="date" class="form-control" required>
+                        </div>
+                        <button class="btn btn-premium w-100">Add Expense</button>
+                    </form>
+                    <hr class="my-4 opacity-25">
+                    <h6 class="mb-3 fw-bold small">Update Monthly Salary</h6>
+                    <form action="/set_salary" method="POST">
+                        <div class="input-group mb-0">
+                            <input type="number" step="0.01" name="salary" class="form-control form-control-sm"
+                                placeholder="Amount" required value="{{ monthly_salary }}">
+                            <button class="btn btn-premium btn-sm px-3">Update</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Financial Health Chart -->
+            <div class="col-lg-4">
+                <div class="card glass-card p-4 h-100 shadow-sm">
+                    <h5 class="mb-4 fw-bold">Financial Health</h5>
+                    <p class="small text-secondary mb-4">Comparison of Salary vs. Total Expenses</p>
+                    <div style="height: 250px;">
+                        <canvas id="healthChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Spending Insights Chart -->
+            <div class="col-lg-4">
+                <div class="card glass-card p-4 h-100 shadow-sm">
+                    <h5 class="mb-4 fw-bold">Spending Insights</h5>
+                    <p class="small text-secondary mb-4">Expenses broken down by category</p>
+                    <div style="height: 250px;">
+                        <canvas id="categoryChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Full Width Transaction History -->
+        <div class="row g-4">
+            <div class="col-12">
+                <div class="card glass-card p-4 mb-4 shadow-sm">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h5 class="fw-bold mb-0">Previous Transactions</h5>
+                        <form method="GET" class="d-flex gap-2">
+                            <input type="text" name="category" class="form-control form-control-sm"
+                                placeholder="Category" style="width: 150px;">
+                            <input type="date" name="date" class="form-control form-control-sm" style="width: 150px;">
+                            <button class="btn btn-premium btn-sm">Filter</button>
+                        </form>
+                    </div>
+
+                    <div class="table-responsive">
+                        <table class="table expense-table mb-0">
+                            <thead>
+                                <tr class="text-secondary small text-uppercase">
+                                    <th class="ps-3 py-3">Title</th>
+                                    <th class="py-3">Category</th>
+                                    <th class="py-3">Amount</th>
+                                    <th class="py-3">Date</th>
+                                    <th class="pe-3 py-3 text-end">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for expense in expenses %}
+                                <tr>
+                                    <td class="ps-3 py-3 fw-bold">{{ expense.title }}</td>
+                                    <td class="py-3"><span class="badge-category">{{ expense.category }}</span></td>
+                                    <td class="py-3 fw-bold text-dark">₹{{ "{:,.2f}".format(expense.amount) }}</td>
+                                    <td class="py-3 text-secondary">{{ expense.date }}</td>
+                                    <td class="pe-3 py-3 text-end">
+                                        <a href="/delete/{{ expense.id }}" class="btn btn-link text-danger p-0"
+                                            title="Delete">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18"
+                                                fill="currentColor" class="bi bi-trash3" viewBox="0 0 16 16">
+                                                <path
+                                                    d="M6.5 1h3a.5.5 0 0 1 .5.5v1H6v-1a.5.5 0 0 1 .5-.5M11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3A1.5 1.5 0 0 0 5 1.5v1H1.5a.5.5 0 0 0 0 1h.538l.853 10.66A2 2 0 0 0 4.885 16h6.23a2 2 0 0 0 1.994-1.84l.853-10.66h.538a.5.5 0 0 0 0-1zm1.958 1-.846 10.58a1 1 0 0 1-.997.92h-6.23a1 1 0 0 1-.997-.92L3.042 3.5zm-7.487 1a.5.5 0 0 1 .528.47l.5 8.5a.5.5 0 0 1-.998.06L5 5.03a.5.5 0 0 1 .47-.53Zm5.058 0a.5.5 0 0 1 .47.53l-.5 8.5a.5.5 0 1 1-.998-.06l.5-8.5a.5.5 0 0 1 .528-.47M8 4.5a.5.5 0 0 1 .5.5v8.5a.5.5 0 0 1-1 0V5a.5.5 0 0 1 .5-.5" />
+                                            </svg>
+                                        </a>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        const ctx = document.getElementById('categoryChart');
+
+        const categoryData = {
+            labels: {{ category_data | map(attribute = 0) | list | safe }},
+        datasets: [{
+            label: 'Category Spending',
+            data: {{ category_data | map(attribute = 1) | list | safe }},
+            backgroundColor: [
+            '#ff1744', '#d50000', '#b71c1c', '#ff5252', '#ff8a80', '#333333'
+        ],
+            borderWidth: 0,
+            hoverOffset: 15
+            }]
+        };
+
+        new Chart(ctx, {
+            type: 'doughnut',
+            data: categoryData,
+            options: {
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            usePointStyle: true,
+                            padding: 20,
+                            font: { family: 'Outfit' }
+                        }
+                    }
+                },
+                cutout: '70%',
+                responsive: true,
+                maintainAspectRatio: false
+            }
+        });
+
+        // Health Chart (Salary vs Spending)
+        const healthCtx = document.getElementById('healthChart');
+        new Chart(healthCtx, {
+            type: 'bar',
+            data: {
+                labels: ['Salary', 'Expenses'],
+                datasets: [{
+                    label: 'Amount (₹)',
+                    data: [{{ monthly_salary }}, {{ monthly_spending }}],
+            backgroundColor: ['#ff1744', '#333333'],
+            borderRadius: 10,
+            borderWidth: 0
+        }]
+            },
+            options: {
+            plugins: {
+                legend: { display: false }
+            },
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    grid: { color: 'rgba(0,0,0,0.05)' },
+                    ticks: { font: { family: 'Outfit' } }
+                },
+                x: {
+                    grid: { display: false },
+                    ticks: { font: { family: 'Outfit' } }
+                }
+            }
+        }
+        });
+    </script>
+
+</body>
+
+</html>
