@@ -1,3 +1,7 @@
-from app import app
+import os
+import sys
 
-# Vercel looks for a variable named `app` in this file
+# Add the root directory to sys.path so 'app' can be imported correctly
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+from app import app

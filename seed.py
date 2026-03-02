@@ -3,48 +3,51 @@ from datetime import datetime, timedelta
 
 def seed_data():
     with app.app_context():
-        # Clear existing data to avoid duplicates if needed
-        # db.drop_all()
-        # db.create_all()
+        # Clear existing data
+        db.drop_all()
+        db.create_all()
 
         now = datetime.now()
-        current_month = now.month
-        current_year = now.year
+        
+        # Helper to get specific months
+        def get_month_date(months_back):
+            target_date = now.replace(day=1)
+            for _ in range(months_back):
+                target_date = (target_date - timedelta(days=1)).replace(day=1)
+            return target_date
 
-        # Previous month
-        prev_date = now.replace(day=1) - timedelta(days=1)
-        prev_month = prev_date.month
-        prev_year = prev_date.year
-
-        # Add Salaries
-        salaries = [
-            Salary(amount=50000.0, month=current_month, year=current_year),
-            Salary(amount=50000.0, month=prev_month, year=prev_year)
-        ]
-
-        # Add Expenses for Current Month
-        current_expenses = [
-            Expense(title="Groceries", amount=2500.0, category="Food", date=now.replace(day=5)),
-            Expense(title="Internet Bill", amount=1200.0, category="Bills", date=now.replace(day=2)),
-            Expense(title="Netflix Subscription", amount=499.0, category="Entertainment", date=now.replace(day=10)),
-            Expense(title="Gym Membership", amount=2000.0, category="Health", date=now.replace(day=1))
-        ]
-
-        # Add Expenses for Previous Month
-        prev_expenses = [
-            Expense(title="Rent", amount=15000.0, category="Housing", date=prev_date.replace(day=1)),
-            Expense(title="Electricity Bill", amount=3500.0, category="Bills", date=prev_date.replace(day=5)),
-            Expense(title="Dining Out", amount=4000.0, category="Food", date=prev_date.replace(day=15))
-        ]
-
-        # Add to session
-        for s in salaries:
-            db.session.add(s)
-        for e in current_expenses + prev_expenses:
-            db.session.add(e)
+        categories = ["Food", "Housing", "Bills", "Entertainment", "Health", "Shopping", "Travel", "Misc"]
+        
+        for i in range(3): # Current month and 2 months back
+            month_start = get_month_date(i)
+            month = month_start.month
+            year = month_start.year
+            
+            # Add Salary
+            salary = Salary(amount=60000.0, month=month, year=year)
+            db.session.add(salary)
+            
+            # Add diverse expenses
+            expenses = [
+                Expense(title="Rent", amount=15000.0, category="Housing", date=month_start.replace(day=1)),
+                Expense(title="Electricity Bill", amount=2500.0, category="Bills", date=month_start.replace(day=5)),
+                Expense(title="Water Bill", amount=500.0, category="Bills", date=month_start.replace(day=5)),
+                Expense(title="Internet", amount=1000.0, category="Bills", date=month_start.replace(day=2)),
+                Expense(title="Groceries", amount=4000.0, category="Food", date=month_start.replace(day=7)),
+                Expense(title="Dining Out", amount=2000.0, category="Food", date=month_start.replace(day=15)),
+                Expense(title="Cinema", amount=800.0, category="Entertainment", date=month_start.replace(day=12)),
+                Expense(title="Gym", amount=1500.0, category="Health", date=month_start.replace(day=1)),
+                Expense(title="Amazon Shopping", amount=3500.0, category="Shopping", date=month_start.replace(day=20)),
+                Expense(title="Petrol/Fuel", amount=3000.0, category="Travel", date=month_start.replace(day=10)),
+                Expense(title="Pharmacy", amount=400.0, category="Health", date=month_start.replace(day=18)),
+                Expense(title="Netflix", amount=499.0, category="Entertainment", date=month_start.replace(day=10)),
+            ]
+            
+            for e in expenses:
+                db.session.add(e)
 
         db.session.commit()
-        print("Database seeded successfully!")
+        print("Database seeded with 3 months of diverse data successfully!")
 
 if __name__ == "__main__":
     seed_data()
